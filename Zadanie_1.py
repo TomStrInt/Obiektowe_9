@@ -3,7 +3,26 @@ from PyQt6.QtCore import Qt
 
 
 class _Bar(QtWidgets.QWidget):
-    pass
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding,
+            QtWidgets.QSizePolicy.Policy.MinimumExpanding
+        )
+
+    def sizeHint(self):
+        return QtCore.QSize(40,120)
+
+    def paintEvent(self, e):
+        painter = QtGui.QPainter(self)
+        brush = QtGui.QBrush()
+        brush.setColor(QtGui.QColor('black'))
+        brush.setStyle(Qt.BrushStyle.SolidPattern)
+        rect = QtCore.QRect(0, 0, painter.device().width(), painter.device().height())
+        painter.fillRect(rect, brush)
+    
 
 class PowerBar(QtWidgets.QWidget):
 
@@ -18,6 +37,8 @@ class PowerBar(QtWidgets.QWidget):
         layout.addWidget(self._dial)
 
         self.setLayout(layout)
+    
+    
 
 
 app = QtWidgets.QApplication([])
