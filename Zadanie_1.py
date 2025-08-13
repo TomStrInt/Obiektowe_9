@@ -1,6 +1,9 @@
 
+import math
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QPointF
+from PyQt6.QtGui import QPainter, QColor
+from PyQt6.QtWidgets import QDial
 
 class _Bar(QtWidgets.QWidget):
     clickedValue = QtCore.pyqtSignal(int)
@@ -61,7 +64,7 @@ class _Bar(QtWidgets.QWidget):
         painter.end()
 
     def sizeHint(self):
-        return QtCore.QSize(40, 120)
+        return QtCore.QSize(140, 200)
 
     def _trigger_refresh(self):
         self.update()
@@ -89,18 +92,24 @@ class PowerBar(QtWidgets.QWidget):
 
     def __init__(self, steps=5, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        layout = QtWidgets.QVBoxLayout()
+        layout = QtWidgets.QHBoxLayout()        #ustawienie poziomego layoutu
 
         self._bar = _Bar(steps)
-        layout.addWidget(self._bar)
-
-        self._dial = QtWidgets.QDial()
-        self._dial.setNotchesVisible(True)
-        self._dial.setWrapping(False)
+        self._dial = DotDial(dot_radius=3, dot_color='green')   #zmiiana kresek na kropki
         self._dial.valueChanged.connect(self._bar._trigger_refresh)
+        self._bar.clickedValue.connect(self._dial.setValue)
+        self._dial.setRange(0, 15)          #zmiana liczby kropek
+        layout.addWidget(self._bar)
         layout.addWidget(self._dial)
+        #self._dial = DotDial(dot_radius=4, dot_color='green')
+        #self._dial = QtWidgets.QDial()
+        #self._dial.setNotchesVisible(True)
+        #self._dial.setWrapping(False)
+        #self._dial.valueChanged.connect(self._bar._trigger_refresh)
+        
+        layout.setStretch(0, 1)
+        layout.setStretch(1, 0)
 
-       
         self._bar.clickedValue.connect(self._dial.setValue)
 
         self.setLayout(layout)
@@ -135,6 +144,44 @@ class PowerBar(QtWidgets.QWidget):
         self._bar._background_color = QtGui.QColor(color)
         self._bar.update()
 
+#dodatkowa klasa zamieniająca (nadpisująca) kropki nad kreski
+class DotDial(QDial):           
+    def __init__(self, *args, dot_radius=3, dot_color='black', dot_margin=6, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setNotchesVisible(False)
+        self.dot_radius = dot_radius
+        self.dot_color = QColor(dot_color)
+        #self.dot_count = dot_count
+        self.dot_margin = dot_margin
+        self.setNotchesVisible(False)
+
+    def paintEvent(self, ev):
+        # 1) narysuj oryginalne pokrętło (bez kresek)
+        super().paintEvent(ev)
+
+        # 2) dopisz własne kropki
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        p.setBrush(self.dot_color)
+        p.setPen(Qt.PenStyle.NoPen)
+
+
+        rect = self.rect()
+        center = rect.center()
+
+
+        r = min(self.width(), self.height())/2 - 5          # promień okręgu kropkowego
+        center = self.rect().center()
+        steps = self.maximum() - self.minimum()            # ile kropek
+
+        start, span = 0, 360                   # kąty w stopniach
+        for i in range(steps+1):
+            ang = math.radians(start + span * i/steps)
+            x = center.x() + r * math.cos(math.pi/2 - ang)
+            y = center.y() - r * math.sin(math.pi/2 - ang)
+            p.drawEllipse(QPointF(x, y), self.dot_radius, self.dot_radius)
+
+        p.end()
 
 
 if __name__ == '__main__':
@@ -145,6 +192,7 @@ if __name__ == '__main__':
     bar.setBarPadding(4)
     bar.setBarSolidPercent(0.8)
     bar.setBackgroundColor('orange')
+    
 
     bar.show()
     app.exec()
