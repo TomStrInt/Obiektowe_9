@@ -1,18 +1,18 @@
-#decorator 
+#funkcje 
 class MyCustomClass:
 
     def __init__(self):
         self._value = None
 
-    @property
-    def value(self):
+    def getValue(self):
         print("getting the value", self._value)
         return self._value
 
-    @value.setter
-    def value(self, value):
+    def setValue(self, value):
         print("setting the value", value)
         self._value = value
+
+    value = property(getValue, setValue)
 
 
 obj = MyCustomClass()
@@ -21,4 +21,4 @@ a = obj.value       # Access the value
 print(a)            # Print the value
 obj.value = 'hello' # Set the value
 b = obj.value       # Access the value
-print(b)  
+print(b)            # Print the value
