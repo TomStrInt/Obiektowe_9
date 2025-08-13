@@ -64,7 +64,7 @@ class _Bar(QtWidgets.QWidget):
         painter.end()
 
     def sizeHint(self):
-        return QtCore.QSize(140, 200)
+        return QtCore.QSize(140, 200)       #zmiana wielkości
 
     def _trigger_refresh(self):
         self.update()
@@ -95,14 +95,13 @@ class PowerBar(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()        #ustawienie poziomego layoutu
 
         self._bar = _Bar(steps)
-        self._dial = DotDial(dot_radius=3, dot_color='green')   #zmiiana kresek na kropki
+        self._dial = DotDial(dot_radius=3, dot_color='blue')   #zmiiana kresek na kropki
         self._dial.valueChanged.connect(self._bar._trigger_refresh)
         self._bar.clickedValue.connect(self._dial.setValue)
-        self._dial.setRange(0, 15)          #zmiana liczby kropek
+        self._dial.setRange(0, 18)          #zmiana liczby kropek
         layout.addWidget(self._bar)
         layout.addWidget(self._dial)
-        #self._dial = DotDial(dot_radius=4, dot_color='green')
-        #self._dial = QtWidgets.QDial()
+        
         #self._dial.setNotchesVisible(True)
         #self._dial.setWrapping(False)
         #self._dial.valueChanged.connect(self._bar._trigger_refresh)
@@ -167,6 +166,7 @@ class DotDial(QDial):
 
         rect = self.rect()
         center = rect.center()
+
 
 
         r = min(self.width(), self.height())/2 - 5          # promień okręgu kropkowego
