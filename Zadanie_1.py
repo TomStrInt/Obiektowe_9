@@ -156,10 +156,9 @@ class DotDial(QDial):
         self.setNotchesVisible(False)
 
     def paintEvent(self, ev):
-        # 1) narysuj oryginalne pokrętło (bez kresek)
         super().paintEvent(ev)
 
-        # 2) dopisz własne kropki
+
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
         p.setBrush(self.dot_color)

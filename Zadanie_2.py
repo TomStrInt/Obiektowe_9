@@ -1,11 +1,24 @@
-class MyObject:
+#decorator 
+class MyCustomClass:
 
     def __init__(self):
-        self.my_attribute = 1
-        self.my_attribute2 = 2
+        self._value = None
 
-obj = MyObject()
-print(obj.my_attribute)
-print(obj.my_attribute2)
-obj.my_attribute = 'hello'
-print(obj.my_attribute)
+    @property
+    def value(self):
+        print("getting the value", self._value)
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        print("setting the value", value)
+        self._value = value
+
+
+obj = MyCustomClass()
+
+a = obj.value       # Access the value
+print(a)            # Print the value
+obj.value = 'hello' # Set the value
+b = obj.value       # Access the value
+print(b)  
