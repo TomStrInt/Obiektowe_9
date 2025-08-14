@@ -1,32 +1,51 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QHBoxLayout
-from PyQt6.QtCore  import QPropertyAnimation, QPoint, QEasingCurve
+from PyQt6.QtWidgets import (
+    QApplication, QWidget, QPushButton, QLabel, QVBoxLayout,
+    QGraphicsOpacityEffect
+)
 
-class Window(QWidget):
+from PyQt6.QtCore import Qt, QPropertyAnimation, QPoint, QEasingCurve
+
+class AnimatedWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(600, 600)
-        self.child = QWidget(self)
-        self.child.setStyleSheet("background-color:red;border-radius:15px;")
-        self.child.resize(100, 100)
-        self.anim = QPropertyAnimation(self.child, b"pos")
-        self.anim.setEasingCurve(QEasingCurve.Type.InOutCubic)
-        self.anim.setEndValue(QPoint(400, 400))
-        self.anim.setDuration(1500)
-        self.anim.start()
+        self.setWindowTitle("Animowane widgety")
+        self.resize(400, 200)
+
+        # Przygotowanie widgetów
+        #self.label.hide()
+        self.button = QPushButton("Kliknij mnie", self)
+        self.label = QLabel("Hello World!", self)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Efekt przezroczystości dla etykiety
+        effect = QGraphicsOpacityEffect(self.label)
+        self.label.setGraphicsEffect(effect)
+
+        # Layout
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.button)
+        layout.addWidget(self.label)
+
+        # Animacja przesunięcia przycisku
+        self.btn_anim = QPropertyAnimation(self.button, b"pos", self)
+        self.btn_anim.setEndValue(QPoint(10, 170))
+        self.btn_anim.setDuration(1000)
+        self.btn_anim.setEasingCurve(QEasingCurve.Type.InOutCubic)
+
+        # Animacja przeźroczystości etykiety
+        self.lbl_anim = QPropertyAnimation(effect, b"opacity", self)
+        self.lbl_anim.setStartValue(0.0)
+        self.lbl_anim.setEndValue(1.0)
+        self.lbl_anim.setDuration(1500)
+        self.lbl_anim.setEasingCurve(QEasingCurve.Type.Linear)
+
+        # Uruchomienie animacji po starcie aplikacji
+        self.btn_anim.start()
+        self.lbl_anim.start()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    #Kontener okienkowy
-    window = QWidget()
-    window.setWindowTitle(" single inoutcubic animation")
-    window.resize(200, 100)
-    win = Window()
-    win.__init__()
-    layout = QHBoxLayout(window)
-    
-    #layout.addWidget(toggle)
-
-    window.show()
+    win = AnimatedWindow()
+    win.show()
     sys.exit(app.exec())
