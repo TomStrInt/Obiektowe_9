@@ -6,4 +6,8 @@ Zadanie 1:
 - zmieniono orientację na poziomą, wymiary, kreski wskaźnika na kropki, ich liczbę i kolory
 
 Zadanie 2:
-- tutorial: dodawanie efektów wizualnych do widgetów
+- tutorial: dodawanie efektów wizualnych do widgetów (Zadanie_2.py)
+- Projekt okna z widgetami (Zadanie_2b.py):  
+    animowany przycisk, który przemieszcza się po kliknięciu oraz zmienia kolor,  
+    etykieta (label) wyłaniająca się po kliknięciu przycisku,   
+    toggle zmieniający kolor tła,   
