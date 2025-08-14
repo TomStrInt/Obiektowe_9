@@ -60,8 +60,8 @@ class SevenSegCountdown(QWidget):
             self.near_end = True
             self.shape_timer.setInterval(50)
 
-        # po dojściu do zera-- pulsowanie
-        if self.remaining == 0 and not self.is_finished:
+        # pulsowanie w trzech ostatnich sekundach 
+        if self.remaining <= 3 and not self.is_finished:
             self.is_finished = True
             self.pulse_timer.start(300)
 
@@ -72,6 +72,7 @@ class SevenSegCountdown(QWidget):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         w, h = self.width(), self.height()
+
         # obszar cyfr - górne 2/3 widgetu
         digit_area = QRectF(0, 0, w, h * 2/3)
 
@@ -154,7 +155,7 @@ class SevenSegCountdown(QWidget):
 class CountdownTimer(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Minutnik 7-segmentowy")
+        self.setWindowTitle("Minutnik")
         self.resize(400, 300)
 
         #kontrolki wejściowe
@@ -217,19 +218,13 @@ class CountdownTimer(QWidget):
         self.timer.stop()
         self.remaining = self.initial_remaining
         #self.display.update_time(0)
-        #self.time_edit.setEnabled(True)
-        #self.start_btn.setEnabled(True)
-        # Zatrzymaj odliczanie
-        #self.timer.stop()
-       # Przywróć stan „00:00” bez wywoływania update_time,
-        # żeby nie odpalić efektu zakończenia
-         #self.remaining = 0
-       # Reset flag animacji w wyświetlaczu
+
         self.display.update_time(self.remaining)
         self.display.is_finished = False
         self.display.near_end = False
         self.display.pulse_timer.stop()
         self.display.pulse_scale = 1.0
+        
        #self.display.update()
        # Przywracanie kontrolek wejsviowych
         self.time_edit.setEnabled(True)
